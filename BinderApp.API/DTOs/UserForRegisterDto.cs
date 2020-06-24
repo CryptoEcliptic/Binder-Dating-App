@@ -9,6 +9,6 @@ namespace BinderApp.API.DTOs
 
         [Required]
         [StringLength(8, MinimumLength = 4, ErrorMessage = "Your password must be between 4 and 8 characters!")]
-        public string Passowrd { get; set; }
+        public string Password { get; set; }
     }
 }
