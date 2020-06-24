@@ -33,6 +33,8 @@ namespace BinderApp.API
             services.AddControllers();
             services.AddCors();
 
+            services.AddScoped<IAuthRepository, AuthRepository>();
+
 
         }
 
