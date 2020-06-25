@@ -351,3 +351,7 @@ MigrationBackup/
 
 # Ignore the default SQLite database.
 *.db
+
+appsettings.json
+
+.vscode
