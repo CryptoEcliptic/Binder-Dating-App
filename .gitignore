@@ -353,5 +353,6 @@ MigrationBackup/
 *.db
 
 appsettings.json
+appsettings.Production.json
 
 .vscode
