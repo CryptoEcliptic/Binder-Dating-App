@@ -13,7 +13,6 @@ constructor(private authservice: AuthService, private router: Router, private al
     if (this.authservice.logedIn()){
       return true;
     }
-    
     this.alertify.error('You are not allowed to access that resource!');
     this.router.navigate(['/home']);
     return false;
