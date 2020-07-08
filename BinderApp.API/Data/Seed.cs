@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using BinderApp.API.Models;
+using Newtonsoft.Json;
 
 namespace BinderApp.API.Data
 {
@@ -12,7 +13,7 @@ namespace BinderApp.API.Data
             if (!context.Users.Any())
             {
                 var data = System.IO.File.ReadAllText("Data/UserSeedData.json");
-                var users = JsonSerializer.Deserialize<List<User>>(data);
+                var users = JsonConvert.DeserializeObject<List<User>>(data);
 
                 foreach(var user in users)
                 {

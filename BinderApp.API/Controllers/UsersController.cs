@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using BinderApp.API.Data;
+using BinderApp.API.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +14,10 @@ namespace BinderApp.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IDatingRepository _repo;
-        public UsersController(IDatingRepository repo)
+        private readonly IMapper _mapper;
+        public UsersController(IDatingRepository repo, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
         }
 
@@ -21,15 +26,18 @@ namespace BinderApp.API.Controllers
         {
             var users = await _repo.GetUsers();
 
-            return Ok(users);
+            var returnedUsers = _mapper.Map<IEnumerable<UserForListDto>>(users);
+
+            return Ok(returnedUsers);
         }
 
-         [HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _repo.GetUser(id);
+            var returnedUser = _mapper.Map<UserForDetailedDto>(user);
 
-            return Ok(user);
+            return Ok(returnedUser);
         }
     }
 }

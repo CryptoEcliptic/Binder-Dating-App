@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using BinderApp.API.Data;
 using BinderApp.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,6 +41,7 @@ namespace BinderApp.API
             services.AddControllers().AddNewtonsoftJson(opt => 
                                                         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
 
             //Registering JWT Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
