@@ -12,5 +12,4 @@ export class MemberCardComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }
