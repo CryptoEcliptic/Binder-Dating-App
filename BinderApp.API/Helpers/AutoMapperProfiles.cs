@@ -25,6 +25,8 @@ namespace BinderApp.API.Helpers
 
             CreateMap<Photo, PhotosForDetailedDto>();
 
+            CreateMap<UserForUpdateDto, User>();
+
         }
     }
 }
