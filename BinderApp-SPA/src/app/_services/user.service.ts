@@ -23,4 +23,9 @@ getUser(id): Observable<User>{
 updateUser(id: number, user: User){
   return this.http.put(this.baseUrl + 'users/' + id, user);
 }
+
+setMainPhoto(userId: number, id: number){
+  // Send empty object in the since it is a POST request.
+  return this.http.post(this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain', {});
+}
 }
