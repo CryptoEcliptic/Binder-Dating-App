@@ -160,6 +160,7 @@ CustomSettings object that will override the default behaviour of the module's l
             "CustomSettings": {
               "ConnectionString": "Data Source=@moduleroot@/Data/Activity%tenantid%.sqlite;",
               "NoCache": false
+              ...
             }
           }
         ]
