@@ -36,7 +36,7 @@ CoreKraft is a component-oriented system. The components in its context are call
               "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
               "Default": true,
               "CustomSettings": {
-                *"BasePath": "@wwwroot@/Custom/Definitions/@nodename@/"*
+                BasePath: @wwwroot@/Custom/Definitions/@nodename@/
               }
             },
             {
@@ -45,7 +45,7 @@ CoreKraft is a component-oriented system. The components in its context are call
               "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
               "Default": true,
               "CustomSettings": {
-                *"ConnectionString": "Server=ConnectionString"*
+                ConnectionString: Server=ConnectionString
               }
             },
             {
@@ -54,7 +54,7 @@ CoreKraft is a component-oriented system. The components in its context are call
               "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
               "Default": true,
               "CustomSettings": {
-                *"ConnectionString": "Data Source=@ConnectionString"*
+                ConnectionString: Data Source=@ConnectionString
               }
             }
           ]
@@ -66,7 +66,7 @@ CoreKraft is a component-oriented system. The components in its context are call
             "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.ISystemPlugin, Ccf.Ck.SysPlugins.Interfaces",
             "Default": true,
             "CustomSettings": {
-              *"ViewPath": "@custom-view-path"*
+              ViewPath: @custom-view-path
             }
           }
         ],
