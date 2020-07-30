@@ -3,9 +3,9 @@
 //You don't need to override settings in that case will take defaults
 //Service and component modules: These can be used in many Apps, and are common for all running entities in the BindKraft session. 
 
-Title: Changing the default behaviour of a particular loader or a collection of loaders for a module.
+# Changing the default behaviour of a particular loader or a collection of loaders for a module.
 
-The default behaviour:
+## The default behaviour:
  - The dependancies of the module are read from Dependancy.json file. (Example of Dependancy.json file bellow)
 ```json
 {
@@ -128,8 +128,8 @@ The default behaviour:
   }
 }
 ```
-The overriding process:
-In order to override the default settings for each module you should add a section "OverrideModuleSettings" in the corresponding appsettings.json file.
+## The overriding process:
+In order to override the default settings for each module you should add a section (OverrideModuleSettings) in the corresponding appsettings.json file.
 In the section you should provide an array of objects. Each object contains ModuleName, Collection of Loaders where you should provide LoaderName and 
 CustomSettings object that will override the default behaviour of the module's loader. 
 (See the example bellow)
@@ -150,7 +150,7 @@ CustomSettings object that will override the default behaviour of the module's l
       "KraftUrlModulePublic": "public",
       "KraftRequestFlagsKey": "sysrequestcontent",
      
-    "OverrideModuleSettings": 
+    OverrideModuleSettings: 
     [
       {
         "ModuleName": "Board",
