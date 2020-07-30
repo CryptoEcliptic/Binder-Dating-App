@@ -11,31 +11,16 @@
 {
   "name": "Board",
   "version": "1.0.0",
-  "description": "The effective application for keeping track of tasks in project. Organize multiple projects in one place, create tasks and make assignments, attached files or share boards",
+  "description": "Description of the project",
   "keywords": [],
   "author": "Clean Code Factory",
   "license": "MIT License",
   "dependencies": {
-    "BindKraftGenericControls": "^1.0.0",
-    "PlatformUtility": "^1.0.0",
-    "BindKraftStyles": "^1.0.0",
-    "KraftNotify": "^1.0.0",
-    "BindKraftUI": "^1.0.0",
-    "UserProfile": "^1.0.0"
+    "PlatformUtility": "^1.0.0"
+    ...
   },
   "signals": [
-    {
-      "key": "DeleteUser",
-      "nodeset": "deleteuser",
-      "nodepath": "tenant",
-      "maintenance": false
-    },
-    {
-      "key": "OnSystemStartUp",
-      "nodeset": "boardtenant",
-      "nodepath": "checktenant",
-      "maintenance": true
-    }
+    ...
   ]
 }
 ```
@@ -58,22 +43,11 @@
           "NodesDataLoader": [
             {
               "Name": "JsonData",
-              "ImplementationAsString": "Ccf.Ck.SysPlugins.Data.Json.JsonDataImp, Ccf.Ck.SysPlugins.Data.Json",
-              "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
-              "Default": true,
-              "CustomSettings": {
-                "BasePath": "@moduleroot@/Data/"
-              }
+              ...
             },
             {
               "Name": "SqLite",
-              "ImplementationAsString": "Ccf.Ck.SysPlugins.Data.Db.ADO.GenericSQLite, Ccf.Ck.SysPlugins.Data.Db.ADO",
-              "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
-              "Default": true,
-              "CustomSettings": {
-                "ConnectionString": "Data Source=@moduleroot@/Data/Activity%tenantid%.sqlite;",
-                "NoCache": false
-              }
+              ...
             }
           ]
         },
@@ -158,7 +132,7 @@ CustomSettings object that will override the default behaviour of the module's l
           {
             "LoaderName": "SqLite",
             "CustomSettings": {
-              "ConnectionString": "Data Source=@moduleroot@/Data/Activity%tenantid%.sqlite;",
+              "ConnectionString": "Data Source=@connectionStringData",
               "NoCache": false
             }
           }
