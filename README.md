@@ -1,12 +1,10 @@
---CoreKraft provides the clients functionality to override the system plugins that are registered in the appsettings.json.
---For that purpose there is a OverrideModuleSetting class which contains data loaders containing the custom settings.
-//You don't need to override settings in that case will take defaults
-//Service and component modules: These can be used in many Apps, and are common for all running entities in the BindKraft session. 
+### Introduction ###
+CoreKraft is a component-oriented system. The components in its context are called modules. These modules are self sufficient and contain everything needed to supply a functioning feature (e.g. html views, css, javascript and C# code). The C# code is represented by other compiled sub-components called Node-Plugins or Loaders. Usually these plugins are written in a general manner and are used in different modules by referencing the compiled lib. Obviously, they must be configured differently. Until now CoreKraft supported in place configuration settings which was problematic in complex deployment scenarios.
 
-# Changing the default behaviour of a particular loader or a collection of loaders for a module.
+# Changing the default settings of a loader or a collection of loaders for a module.
 
-## The default behaviour:
- - The dependancies of the module are read from Dependancy.json file. (Example of Dependancy.json file bellow)
+## The default behavior:
+ - The dependencies of the module are read from Dependency.json file. (Example of Dependency.json file below)
 ```json
 {
   "name": "Board",
@@ -26,31 +24,52 @@
 ```
  - Configuration settings of the module are read from the Configuration.json file. (Example of Configuration.json file bellow)
 ```json
-{
+ {
   "KraftModuleConfigurationSettings": {
     "NodeSetSettings": {
       "SourceLoaderMapping": {
         "NodesDataIterator": {
-          "NodesDataIteratorConf": {
-            "Name": "DefaultNodeTreeIterator",
-            "ImplementationAsString": "Ccf.Ck.SysPlugins.Iterators.DataNodes.DataNodesImp, Ccf.Ck.SysPlugins.Iterators.DataNodes",
-            "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataIteratorPlugin, Ccf.Ck.SysPlugins.Interfaces",
-            "Default": true,
-            "CustomSettings": {
-              "MyCustomsetting": "Iterator"
-            }
-          },
           "NodesDataLoader": [
             {
               "Name": "JsonData",
-              ...
+              "ImplementationAsString": "Ccf.Ck.SysPlugins.Data.Json.JsonDataImp, Ccf.Ck.SysPlugins.Data.Json",
+              "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
+              "Default": true,
+              "CustomSettings": {
+                *"BasePath": "@wwwroot@/Custom/Definitions/@nodename@/"*
+              }
             },
             {
-              "Name": "SqLite",
-              ...
+              "Name": "SqlServerData",
+              "ImplementationAsString": "Ccf.Ck.SysPlugins.Data.Db.ADO.GenericSQLServer, Ccf.Ck.SysPlugins.Data.Db.ADO",
+              "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
+              "Default": true,
+              "CustomSettings": {
+                *"ConnectionString": "Server=ConnectionString"*
+              }
+            },
+            {
+              "Name": "SqLiteData",
+              "ImplementationAsString": "Ccf.Ck.SysPlugins.Data.Db.ADO.GenericSQLite, Ccf.Ck.SysPlugins.Data.Db.ADO",
+              "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.IDataLoaderPlugin, Ccf.Ck.SysPlugins.Interfaces",
+              "Default": true,
+              "CustomSettings": {
+                *"ConnectionString": "Data Source=@ConnectionString"*
+              }
             }
           ]
         },
+        "ViewLoader": [
+          {
+            "Name": "HtmlViewLoader",
+            "ImplementationAsString": "Ccf.Ck.SysPlugins.Views.Html.HtmlViewImp, Ccf.Ck.SysPlugins.Views.Html",
+            "InterfaceAsString": "Ccf.Ck.SysPlugins.Interfaces.ISystemPlugin, Ccf.Ck.SysPlugins.Interfaces",
+            "Default": true,
+            "CustomSettings": {
+              *"ViewPath": "@custom-view-path"*
+            }
+          }
+        ],
         "LookupLoader": [
         ],
         "ResourceLoader": [
@@ -59,8 +78,9 @@
     }
   }
 }
+
 ```
- - The application settings are read from the appsettings.json file. Here the default values for each module are load. (Example of appsettings.json file bellow)
+ - The application settings are read from the appsettings.json file. Here the default values for each module are loaded. (Example of appsettings.json file bellow)
 ```json
 {
   "KraftGlobalConfigurationSettings": {
@@ -105,7 +125,7 @@
 ## The overriding process:
 In order to override the default settings for each module you should add a section (OverrideModuleSettings) in the corresponding appsettings.json file.
 In the section you should provide an array of objects. Each object contains ModuleName, Collection of Loaders where you should provide LoaderName and 
-CustomSettings object that will override the default behaviour of the module's loader. 
+CustomSettings object that will override the default behavior of the module's loader. 
 (See the example bellow)
 ```json
 {
@@ -142,6 +162,8 @@ CustomSettings object that will override the default behaviour of the module's l
   }
 }
 ```
+
+
 
 
 
