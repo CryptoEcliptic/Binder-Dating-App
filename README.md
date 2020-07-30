@@ -1,7 +1,6 @@
 ### Introduction ###
 CoreKraft is a component-oriented system. The components in its context are called modules. These modules are self sufficient and contain everything needed to supply a functioning feature (e.g. html views, css, javascript and C# code). The C# code is represented by other compiled sub-components called Node-Plugins or Loaders. Usually these plugins are written in a general manner and are used in different modules by referencing the compiled lib. Obviously, they must be configured differently. Until now CoreKraft supported in place configuration settings which was problematic in complex deployment scenarios. The new feature gives opportunity to provide external configuration settings for the Node-Plugins (Loaders).
 
-# Changing the default settings of a loader or a collection of loaders for a module.
 
 ## The default behavior:
  - The dependencies of the module are read from Dependency.json file. (Example of Dependency.json file below)
@@ -122,7 +121,7 @@ CoreKraft is a component-oriented system. The components in its context are call
   }
 }
 ```
-## The overriding process:
+# Changing the default settings of a loader or a collection of loaders for a module:
 In order to override the default settings for each plugin you should add a section (OverrideModuleSettings) in the corresponding appsettings.json file.
 In the section you should provide an array of objects. Each object contains ModuleName, Collection of Loaders where you should provide LoaderName and 
 CustomSettings object that will override the default behavior of the module's loader. 
@@ -162,8 +161,3 @@ CustomSettings object that will override the default behavior of the module's lo
   }
 }
 ```
-
-
-
-
-
