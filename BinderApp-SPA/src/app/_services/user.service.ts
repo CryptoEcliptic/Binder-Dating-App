@@ -28,4 +28,8 @@ setMainPhoto(userId: number, id: number){
   // Send empty object in the since it is a POST request.
   return this.http.post(this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain', {});
 }
+
+deletePhoto(userId: number, id: number){
+  return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id);
+}
 }

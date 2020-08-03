@@ -66,4 +66,15 @@ setMainPhoto(photo: Photo){
     this.alertify.error(error);
   });
 }
+
+deletePhoto(id: number){
+  this.alertify.confirm('Are you sure you want to delete that photo?', () => {
+    this.userService.deletePhoto(this.authService.decodedToken.nameid, id).subscribe(() => {
+      this.photos.splice(this.photos.findIndex(i => i.id === id), 1);
+      this.alertify.success('The photo has been deleted!');
+    }, error => {
+      this.alertify.error('Failed to delete the photo!');
+    });
+  });
+}
 }
