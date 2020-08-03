@@ -59,7 +59,9 @@ setMainPhoto(photo: Photo){
     this.currentMain = this.photos.filter(p => p.isMain === true)[0]; // get current main photo
     this.currentMain.isMain = false; // set current main photo isMain to false
     photo.isMain = true; // set new main photo
-    this.getMemberPhotoChange.emit(photo.url); // emit the change of the main photo to the parent component (member-edit component)
+    this.authService.changeMemberPhoto(photo.url);
+    this.authService.currentUser.photoUrl = photo.url;
+    localStorage.setItem('user', JSON.stringify(this.authService.currentUser.photoUrl));
   }, error => {
     this.alertify.error(error);
   });
