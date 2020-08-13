@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BinderApp.API.Data;
 using BinderApp.API.DTOs;
+using BinderApp.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BinderApp.API.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
