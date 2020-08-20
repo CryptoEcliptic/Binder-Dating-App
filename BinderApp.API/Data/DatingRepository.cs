@@ -52,7 +52,7 @@ namespace BinderApp.API.Data
         {
             var users = _context.Users.Include(p => p.Photos).AsQueryable();
             users = users.Where(u => u.Id != userParams.UserId);
-            users = users.Where(u => u.Gender != userParams.Gender);
+            users = users.Where(u => u.Gender == userParams.Gender);
 
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {

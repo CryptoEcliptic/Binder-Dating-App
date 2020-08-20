@@ -31,9 +31,9 @@ namespace BinderApp.API.Controllers
             var userFromRepo = await _repo.GetUser(currentUserId);
             userParams.UserId = currentUserId;
 
-            if(string.IsNullOrEmpty(userParams.Gender))
+           if (string.IsNullOrEmpty(userParams.Gender))
             {
-                userParams.Gender = userFromRepo.Gender;
+                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
             }
 
             var users = await _repo.GetUsers(userParams);
