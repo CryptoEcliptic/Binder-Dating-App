@@ -33,7 +33,7 @@ namespace BinderApp.API.Controllers
 
             if(string.IsNullOrEmpty(userParams.Gender))
             {
-                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+                userParams.Gender = userFromRepo.Gender;
             }
 
             var users = await _repo.GetUsers(userParams);
