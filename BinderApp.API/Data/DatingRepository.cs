@@ -60,6 +60,17 @@ namespace BinderApp.API.Data
             users = users.Where(u => u.Id != userParams.UserId);
             users = users.Where(u => u.Gender == userParams.Gender);
 
+            if(userParams.Likers)
+            {
+                var userLikers = await GetUserLikes(userParams.UserId, userParams.Likers);
+                users = users.Where(u => userLikers.Contains(u.Id));
+            }
+
+            if(userParams.Likees)
+            {
+                 var userLikees= await GetUserLikes(userParams.UserId, userParams.Likers);
+                users = users.Where(u => userLikees.Contains(u.Id));            }
+
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {
                 var minDateOfBirth = DateTime.Today.AddYears(-userParams.MaxAge - 1);
@@ -86,6 +97,23 @@ namespace BinderApp.API.Data
         public async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        private async Task<IEnumerable<int>> GetUserLikes(int id, bool likers)
+        {
+            var user = await _context.Users
+                .Include(x => x.Likers)
+                .Include(x => x.Likees)
+                .FirstOrDefaultAsync();
+
+                if(likers)
+                {
+                    return user.Likers.Where(u => u.LikeeId == id).Select(i => i.LikerId);
+                }
+                else
+                {
+                    return user.Likees.Where(u => u.LikerId == id).Select(i => i.LikeeId);
+                }
         }
     }
 }
