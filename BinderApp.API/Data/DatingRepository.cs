@@ -42,9 +42,33 @@ namespace BinderApp.API.Data
             return await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public Task<PagedList<Message>> GetMessagesForUser()
+        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
         {
-            throw new NotImplementedException();
+            var messages = _context.Messages
+                .Include(u => u.Sender)
+                    .ThenInclude(p => p.Photos)
+                .Include(u => u.Recipient)
+                    .ThenInclude(p => p.Photos)
+                .AsQueryable();
+
+            switch(messageParams.MessageContainer)
+            {
+                case "Inbox":
+                    messages = messages.Where(x => x.RecipientId == messageParams.UserId);
+                break;
+
+                case "Outbox":
+                    messages = messages.Where(x => x.SenderId == messageParams.UserId);
+                break;
+
+                default:
+                    messages = messages.Where(x => x.RecipientId == messageParams.UserId && x.IsRead == false);
+                break;
+            }
+
+            messages = messages.OrderByDescending(x => x.MessageSent);
+            
+            return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
         }
 
         public Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
