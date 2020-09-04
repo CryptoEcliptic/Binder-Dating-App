@@ -71,9 +71,19 @@ namespace BinderApp.API.Data
             return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
         }
 
-        public Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
+        public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
         {
-            throw new NotImplementedException();
+            var messages = await _context.Messages
+                .Include(u => u.Sender)
+                    .ThenInclude(p => p.Photos)
+                .Include(u => u.Recipient)
+                    .ThenInclude(p => p.Photos)
+                .Where(x => x.RecipientId == userId && x.SenderId == recipientId
+                || x.SenderId == userId && x.RecipientId == recipientId)
+                .OrderByDescending(x => x.MessageSent)
+                .ToListAsync();
+
+                return messages;
         }
 
         public async Task<Photo> GetPhoto(int id)
