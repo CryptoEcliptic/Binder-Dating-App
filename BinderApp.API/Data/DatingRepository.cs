@@ -54,15 +54,15 @@ namespace BinderApp.API.Data
             switch(messageParams.MessageContainer)
             {
                 case "Inbox":
-                    messages = messages.Where(x => x.RecipientId == messageParams.UserId);
+                    messages = messages.Where(x => x.RecipientId == messageParams.UserId && x.RecipientDeleted == false);
                 break;
 
                 case "Outbox":
-                    messages = messages.Where(x => x.SenderId == messageParams.UserId);
+                    messages = messages.Where(x => x.SenderId == messageParams.UserId && x.SenderDeleted == false);
                 break;
 
                 default:
-                    messages = messages.Where(x => x.RecipientId == messageParams.UserId && x.IsRead == false);
+                    messages = messages.Where(x => x.RecipientId == messageParams.UserId && x.RecipientDeleted == false && x.IsRead == false);
                 break;
             }
 
@@ -78,8 +78,8 @@ namespace BinderApp.API.Data
                     .ThenInclude(p => p.Photos)
                 .Include(u => u.Recipient)
                     .ThenInclude(p => p.Photos)
-                .Where(x => x.RecipientId == userId && x.SenderId == recipientId
-                || x.SenderId == userId && x.RecipientId == recipientId)
+                .Where(x => x.RecipientId == userId && x.RecipientDeleted == false && x.SenderId == recipientId
+                || x.SenderId == userId && x.RecipientId == recipientId && x.SenderDeleted == false)
                 .OrderByDescending(x => x.MessageSent)
                 .ToListAsync();
 
