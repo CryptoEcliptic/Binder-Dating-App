@@ -86,16 +86,20 @@ namespace BinderApp.API
 
             //app.UseHttpsRedirection();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+            app.UseRouting();
+
             //Adding Authorization
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseRouting();
 
-            app.UseAuthorization();
-
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+ 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }
