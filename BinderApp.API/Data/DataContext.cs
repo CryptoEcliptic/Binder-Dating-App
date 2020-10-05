@@ -1,9 +1,14 @@
 using BinderApp.API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BinderApp.API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole
+    , IdentityUserLogin<int>
+    , IdentityRoleClaim<int>
+    , IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions<DataContext> options)
         : base(options)
@@ -13,8 +18,6 @@ namespace BinderApp.API.Data
 
         public DbSet<Value> Values { get; set; }
 
-        public DbSet<User> Users { get; set; }
-
         public DbSet<Photo> Photos { get; set; }
 
         public DbSet<Like> Likes { get; set; }
@@ -23,6 +26,25 @@ namespace BinderApp.API.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserRole>(userRole => {
+
+                userRole.HasKey( x => new {x.UserId, x.RoleId});
+                userRole.HasOne(x => x.Role)
+                .WithMany(x => x.UserRoles)
+                .HasForeignKey(x => x.RoleId)
+                .IsRequired();
+
+                userRole.HasOne(x => x.User)
+                .WithMany(x => x.UserRoles)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
+              }
+            );
+
+        
+
             builder.Entity<Like>()
                 .HasKey(k => new {k.LikerId, k.LikeeId});
 
