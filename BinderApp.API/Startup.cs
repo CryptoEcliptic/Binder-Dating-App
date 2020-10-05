@@ -7,13 +7,17 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BinderApp.API.Data;
 using BinderApp.API.Helpers;
+using BinderApp.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,13 +54,22 @@ namespace BinderApp.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //Password configuration
+            IdentityBuilder builder = services.AddIdentityCore<User>(options => {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 4;
+            });
 
-            services.AddDbContext<DataContext>(options => options
-                            .UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllers().AddNewtonsoftJson(opt => 
-                                                        opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddCors();
-            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+            //Creating an instance of Identity builder
+            builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
+
+            //Configuring Identity
+            builder.AddEntityFrameworkStores<DataContext>();
+            builder.AddRoleValidator<RoleValidator<Role>>();
+            builder.AddRoleManager<RoleManager<Role>>();
+            builder.AddSignInManager<SignInManager<User>>();
 
             //Registering JWT Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -68,6 +81,22 @@ namespace BinderApp.API
                             ValidateAudience = false,
                         };
                     });
+
+            services.AddDbContext<DataContext>(options => options
+                            .UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddControllers(options => {
+                var policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddNewtonsoftJson(opt => 
+                                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                                
+            services.AddCors();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
