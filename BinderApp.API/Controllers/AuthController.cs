@@ -8,6 +8,7 @@ using BinderApp.API.Data;
 using BinderApp.API.DTOs;
 using BinderApp.API.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -22,9 +23,15 @@ namespace BinderApp.API.Controllers
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper)
+        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper,
+                 UserManager<User> userManager,
+                 SignInManager<User> signInManager)
         {
+            _signInManager = signInManager;
+            _userManager = userManager;
             _configuration = configuration;
             _mapper = mapper;
             _repo = repo;
@@ -46,24 +53,36 @@ namespace BinderApp.API.Controllers
 
             UserForDetailedDto userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
 
-            return CreatedAtRoute("GetUser", new { Controller = "Users", id = createdUser.Id}, userToReturn);
+            return CreatedAtRoute("GetUser", new { Controller = "Users", id = createdUser.Id }, userToReturn);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
+            var user = await _userManager.FindByNameAsync(userForLoginDto.Username);
 
-            if (userFromRepo == null)
+            var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, false);
+
+            if(result.Succeeded)
             {
-                return Unauthorized();
+                var appUser = _mapper.Map<UserForListDto>(user);
+
+                return Ok(new
+                {
+                    token = GenerateJWTToken(user),
+                    user = appUser
+                });
             }
 
-            //Create user claims used in the JWT
+            return Unauthorized();
+        }
+
+        private string GenerateJWTToken(User user)
+        {
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.UserName)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName)
             };
 
             //Creating a security key with which the server signs the Jwt token
@@ -88,13 +107,8 @@ namespace BinderApp.API.Controllers
             //Use the tokenHandler to create jwt token
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            var user = _mapper.Map<UserForListDto>(userFromRepo);
+            return tokenHandler.WriteToken(token);
 
-            //send the token to the client
-            return Ok(new {
-                token = tokenHandler.WriteToken(token),
-                user
-            });
         }
     }
 }
