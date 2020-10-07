@@ -81,6 +81,13 @@ namespace BinderApp.API
                             ValidateAudience = false,
                         };
                     });
+            
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));  
+                options.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Moderator", "Admin"));
+                options.AddPolicy("VipOnly", policy => policy.RequireRole("VIP"));     
+            });
 
             services.AddDbContext<DataContext>(options => options
                             .UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
