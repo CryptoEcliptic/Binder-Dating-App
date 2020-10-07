@@ -20,13 +20,12 @@ namespace BinderApp.API.Controllers
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _repo;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper,
+        public AuthController(IConfiguration configuration, IMapper mapper,
                  UserManager<User> userManager,
                  SignInManager<User> signInManager)
         {
@@ -34,26 +33,25 @@ namespace BinderApp.API.Controllers
             _userManager = userManager;
             _configuration = configuration;
             _mapper = mapper;
-            _repo = repo;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-
-            if (await _repo.UserExists(userForRegisterDto.Username))
-            {
-                return BadRequest("Username already exists!");
-            }
 
             User userToCreate = _mapper.Map<User>(userForRegisterDto);
 
-            User createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
+            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDto.Password)
+;
 
-            UserForDetailedDto userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
+            var userToReturn = _mapper.Map<UserForDetailedDto>(userToCreate);
 
-            return CreatedAtRoute("GetUser", new { Controller = "Users", id = createdUser.Id }, userToReturn);
+           if(result.Succeeded)
+           {
+                return CreatedAtRoute("GetUser", new { Controller = "Users", id = userToCreate.Id }, userToReturn);
+           }
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("login")]
