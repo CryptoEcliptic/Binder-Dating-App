@@ -63,10 +63,10 @@ namespace BinderApp.API.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Username)
+                new Claim(ClaimTypes.Name, userFromRepo.UserName)
             };
 
-            //Creaing a security key with which the server signs the Jwt token
+            //Creating a security key with which the server signs the Jwt token
             var key = new SymmetricSecurityKey(Encoding.UTF8
                                                 .GetBytes(_configuration
                                                 .GetSection("AppSettings:Token").Value));
