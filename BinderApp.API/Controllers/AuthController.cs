@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -75,13 +76,20 @@ namespace BinderApp.API.Controllers
             return Unauthorized();
         }
 
-        private string GenerateJWTToken(User user)
+        private async Task<string> GenerateJWTToken(User user)
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach(var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             //Creating a security key with which the server signs the Jwt token
             var key = new SymmetricSecurityKey(Encoding.UTF8
