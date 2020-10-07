@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using BinderApp.API.Data;
 using BinderApp.API.Helpers;
@@ -14,15 +10,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BinderApp.API
@@ -36,6 +29,7 @@ namespace BinderApp.API
 
         public IConfiguration Configuration { get; }
 
+        //Configure development services and then invoking ConfigureServices method
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options => options
@@ -44,13 +38,14 @@ namespace BinderApp.API
             ConfigureServices(services);
         }
 
+         //Configure production services and then invoking ConfigureServices method
          public void ConfigureProductionServices(IServiceCollection services)
-        {
+         {
             services.AddDbContext<DataContext>(options => options
                             .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             ConfigureServices(services);
-        }
+         }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -82,6 +77,7 @@ namespace BinderApp.API
                         };
                     });
             
+            //Adding authorization role policies
             services.AddAuthorization(options => 
             {
                 options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));  
@@ -91,6 +87,7 @@ namespace BinderApp.API
 
             services.AddDbContext<DataContext>(options => options
                             .UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddControllers(options => {
                 var policy = new AuthorizationPolicyBuilder()
                                 .RequireAuthenticatedUser()
@@ -102,6 +99,8 @@ namespace BinderApp.API
                                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
                                 
             services.AddCors();
+
+            //Adding Automapper
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
@@ -112,6 +111,7 @@ namespace BinderApp.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //Configure exception handling
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
