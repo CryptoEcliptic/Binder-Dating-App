@@ -47,4 +47,16 @@ changeMemberPhoto(photoUrl: string){
     const token = localStorage.getItem('token');
     return !this.jwtHelper.isTokenExpired(token);
   }
+
+  roleMatch(allowedRoles){
+    let isMatch = false;
+    const userRoles = this.decodedToken.role as Array<string>;
+    allowedRoles.forEach(element => {
+      if(userRoles.includes(element)){
+        isMatch = true;
+        return;
+      }
+    });
+    return isMatch;
+  }
 }
