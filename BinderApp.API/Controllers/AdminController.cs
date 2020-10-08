@@ -49,16 +49,17 @@ namespace BinderApp.API.Controllers
         }
 
         [HttpPost("editRoles/{userName}")]
-         [Authorize(Policy = "RequireAdminRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> EditRoles(string userName, RoleEditDto roleEditDto)
         {
             var user = await _userManager.FindByNameAsync(userName);
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
+            //Get all selected roles from the client
             var selectedRoles = roleEditDto.RoleNames;
 
-            //Return empty array if the user has no roles;
+            //Return empty array if the user has no roles selected or deselected all roles;
             selectedRoles = selectedRoles ?? new string[] {};
             var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
 
