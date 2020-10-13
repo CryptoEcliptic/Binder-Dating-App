@@ -40,6 +40,9 @@ import { MessagesResolver } from './_resolvers/messages.resolver';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { HasRoleDirective } from './_directives/hasRole.directive';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
+import { AdminService } from './_services/admin.service';
 
 
 export function tokenGetter(){
@@ -62,6 +65,8 @@ export function tokenGetter(){
       MemberMessagesComponent,
       AdminPanelComponent,
       HasRoleDirective,
+      UserManagementComponent,
+      PhotoManagementComponent
 
    ],
    imports: [
@@ -99,7 +104,8 @@ export function tokenGetter(){
       MemberEditResolver,
       ListsResolver,
       MessagesResolver,
-      PreventUnsavedChanges
+      PreventUnsavedChanges,
+      AdminService
    ],
    bootstrap: [
       AppComponent
