@@ -5,6 +5,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { RouterModule } from '@angular/router';
@@ -43,6 +44,7 @@ import { HasRoleDirective } from './_directives/hasRole.directive';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
 import { AdminService } from './_services/admin.service';
+import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
 
 
 export function tokenGetter(){
@@ -66,7 +68,8 @@ export function tokenGetter(){
       AdminPanelComponent,
       HasRoleDirective,
       UserManagementComponent,
-      PhotoManagementComponent
+      PhotoManagementComponent,
+      RolesModalComponent
 
    ],
    imports: [
@@ -82,6 +85,7 @@ export function tokenGetter(){
       BsDatepickerModule.forRoot(),
       ButtonsModule.forRoot(),
       NgxGalleryModule,
+      ModalModule.forRoot(),
       FileUploadModule,
       RouterModule.forRoot(appRoutes),
       JwtModule.forRoot({
@@ -106,6 +110,9 @@ export function tokenGetter(){
       MessagesResolver,
       PreventUnsavedChanges,
       AdminService
+   ],
+   entryComponents: [
+      RolesModalComponent
    ],
    bootstrap: [
       AppComponent
